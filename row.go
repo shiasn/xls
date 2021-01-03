@@ -17,6 +17,22 @@ type Row struct {
 	cols map[uint16]contentHandler
 }
 
+func (r *Row) FloatCol (i int) (float64, bool) {
+	serial := uint16(i)
+	if ch, ok := r.cols[serial]; ok {
+		c := ch.(interface{})
+		switch c.(type) {
+		case *NumberCol:
+			nc := c.(*NumberCol)
+			return nc.Float, true
+		default:
+			return 0.0, false
+		}
+	}
+
+	return 0.0, false
+}
+
 //Col Get the Nth Col from the Row, if has not, return nil.
 //Suggest use Has function to test it.
 func (r *Row) Col(i int) string {
